@@ -59,7 +59,10 @@ class HermesSender:
     """
 
     def send(self, target: Target, text: str) -> str | None:
-        from tools.send_message_tool import send_message_tool
+        try:  # Hermes 0.23 moved the send path out of tools/
+            from gateway.outbound.send import send_message_tool
+        except ImportError:
+            from tools.send_message_tool import send_message_tool
 
         args = {"action": "send", "target": f"{target.platform}:{target.chat_id}", "message": text}
         try:

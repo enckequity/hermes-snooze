@@ -70,7 +70,7 @@ class CliTest(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(stdout, "1\n")
         self.assertIn("Snooze #1", stderr)
-        self.assertIn("gateway", stderr.lower())
+        self.assertIn("messaging is not running", stderr.lower())
         snooze = Store(self.data_dir).get(1)
         self.assertEqual(snooze.target, HOME)
         self.assertEqual(snooze.state, ACTIVE)

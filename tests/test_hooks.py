@@ -222,7 +222,8 @@ class ThenTest(Base):
         self.with_then(confirm=EMOJI)
         self.hooks._inject = None
         await self.react()
-        self.assertEqual(self.sent()[1], ("123", "⚠️ then-action failed: this Hermes has no inject_message"))
+        expected = "⚠️ then-action failed: follow-ups are not available in this workspace"
+        self.assertEqual(self.sent()[1], ("123", expected))
 
     async def test_failed_warning_send_is_only_logged(self):
         self.with_then(confirm=EMOJI)

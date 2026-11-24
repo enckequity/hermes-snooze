@@ -350,10 +350,22 @@ class HermesSenderTest(unittest.TestCase):
     def sender_with(self, reply):
         module = types.ModuleType("tools.send_message_tool")
         module.send_message_tool = mock.Mock(side_effect=lambda args: reply(args))
-        patch = mock.patch.dict(sys.modules, {"tools": types.ModuleType("tools"), "tools.send_message_tool": module})
+        patch = mock.patch.dict(
+            sys.modules,
+            {"tools": types.ModuleType("tools"), "tools.send_message_tool": module, "gateway.outbound.send": None},
+        )
         patch.start()
         self.addCleanup(patch.stop)
         return module
+
+    def test_prefers_the_gateway_outbound_send_path(self):
+        old = self.sender_with(lambda args: json.dumps({"success": True, "message_id": 1}))
+        new = types.ModuleType("gateway.outbound.send")
+        new.send_message_tool = mock.Mock(return_value=json.dumps({"success": True, "message_id": 2}))
+        with mock.patch.dict(sys.modules, {"gateway.outbound.send": new}):
+            mid = send.HermesSender().send(Target(platform="telegram", chat_id="1"), "hi")
+        self.assertEqual(mid, "2")
+        old.send_message_tool.assert_not_called()
 
     def test_sends_to_platform_chat_and_returns_the_message_id(self):
         module = self.sender_with(lambda args: json.dumps({"success": True, "message_id": 77}))

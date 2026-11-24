@@ -61,8 +61,8 @@ def then_prompt(snooze: Snooze) -> str:
 
 
 INJECT_REFUSED = (
-    "Hermes did not accept the turn. Set plugins.entries.snooze.allow_gateway_injection: true "
-    "and make sure the gateway is running."
+    "The assistant did not accept the follow-up. Set plugins.entries.snooze.allow_gateway_injection: true "
+    "and make sure messaging is running."
 )
 REPLY_GRACE_SECONDS = 1.0  # a command's reply is sent after its handler returns: let it go first
 
@@ -322,7 +322,7 @@ class Hooks:
     def _inject_then(self, snooze: Snooze, source: Any = None) -> str | None:
         """Queue the agent turn for a confirmed snooze. None if Hermes took it, else why not."""
         if self._inject is None:
-            return "this Hermes has no inject_message"
+            return "follow-ups are not available in this workspace"
         try:
             prompt = then_prompt(snooze)
             accepted = self._inject(prompt, origin=then_origin(snooze.target, source))

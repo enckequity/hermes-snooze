@@ -4,16 +4,17 @@
 Run it with Hermes' own Python. Prints one `FAIL name: reason` line per name that no longer
 imports and exits 1 if any failed. Standard library only.
 
-    python scripts/hermes_compat.py
+    python compat.py
 """
 
 import importlib
 import sys
 
 # (module, name) pairs Snooze uses from Hermes (send.py, commands.py). `name` may be dotted
-# (`Class.method`), resolved with getattr. The first two are private Hermes names (send.py).
+# (`Class.method`), resolved with getattr. `module` may list alternatives as `new|old`: the first that
+# imports is used. The first two are private Hermes names (send.py).
 HERMES_NAMES = [
-    ("tools.send_message_tool", "send_message_tool"),
+    ("gateway.outbound.send|tools.send_message_tool", "send_message_tool"),
     ("agent.estop", "is_engaged"),
     ("plugins.plugin_storage", "plugin_data_dir"),
     ("gateway.session_context", "get_session_env"),
@@ -31,7 +32,15 @@ HERMES_HOOKS = ["post_gateway_admission"]
 
 def lookup(module: str, name: str):
     """The object at `name` in `module`; a dotted name such as `Class.method` is walked with getattr."""
-    obj = importlib.import_module(module)
+    *alternatives, last = module.split("|")
+    for candidate in alternatives:
+        try:
+            obj = importlib.import_module(candidate)
+            break
+        except ImportError:
+            continue
+    else:
+        obj = importlib.import_module(last)
     for part in name.split("."):
         obj = getattr(obj, part)
     return obj

@@ -20,16 +20,15 @@ TEST_WINDOW = timedelta(minutes=2)  # time the user has to reply
 TEST_ARRIVES_IN = 15  # seconds; the timer's tick (`send.TICK_SECONDS`)
 TEST_PASSED = "✅ Test passed: reminders are sent and your replies are received."
 TEST_MISSED = (
-    "❌ Test: no reply received in 2 min. Check that the gateway serves this profile and that you replied in this chat."
+    "❌ Test: no reply received in 2 min. "
+    "Check that messaging is running for this workspace and that you replied in this chat."
 )
 TEST_GATEWAY_OFF = (
     "🧪 Snooze test not started\n"
-    "❌ Gateway not running for this profile: it could send nothing and read no reply. "
-    "Start it (hermes gateway start), then run /snooze test again."
+    "❌ Messaging is not running for this workspace: it could send nothing and read no reply. "
+    "Run /snooze test again once messaging is back."
 )
-GATEWAY_OFF_WARNING = (
-    "⚠️ The gateway is not running for this profile: no reminder will be sent until it runs (hermes gateway start)."
-)
+GATEWAY_OFF_WARNING = "⚠️ Messaging is not running for this workspace: no reminder will be sent until it is back."
 
 
 def from_iso(value: Any) -> datetime | None:
