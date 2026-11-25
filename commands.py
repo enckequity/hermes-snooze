@@ -94,7 +94,7 @@ HELP = "\n".join(
     ]
 )
 
-PAUSED_TEXT = "⏸ Hermes is paused: no reminders until hermes resume"
+PAUSED_TEXT = "⏸ The assistant is paused: no reminders until it resumes"
 
 NO_TARGET_TEXT = (
     "No chat to send reminders to: run this from a chat (Telegram, Discord, ...), "

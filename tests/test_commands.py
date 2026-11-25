@@ -881,7 +881,7 @@ class SnoozeTestCommandTest(Base):
     def test_no_test_without_a_gateway(self):
         self.gateway = False
         reply = self.run_cmd("test", source=telegram_source())
-        self.assertIn("❌ Gateway not running", reply)
+        self.assertIn("❌ Messaging is not running", reply)
         self.assertEqual(self.store.load(), [])
 
     def test_gateway_unknown_still_runs_the_test(self):
